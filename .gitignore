@@ -1,0 +1,42 @@
+# Dependency directories
+/node_modules
+
+# Compiled output
+/build
+/dist
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Editor and IDE files
+.idea
+.vscode
+*.swp
+*~
+._*
+
+# Build cache and logs
+/.cache
+/.eslintcache
+/.yarn
+/yarn-error.log
+
+# Testing artifacts
+/coverage
+
+# Package lock files
+package-lock.json
+yarn.lock
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+/.pnp
+.pnp.js
+
+npm-debug.log*
+yarn-debug.log*
+
