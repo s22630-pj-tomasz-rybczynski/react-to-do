@@ -9,17 +9,8 @@ export default function Home() {
   let [tasks, setTasks] = useState<ITask[]>([]);
 
   useEffect(() => {
-
-      async function fetchTasks() {
-        const data = await getAllTodos();
-
-        setTasks(data);
-      }
-
-      if(tasks.length === 0) {
-        fetchTasks();
-      }
-    }, [tasks]);
+    getAllTodos().then(setTasks)
+  }, []);
     
   return (
     <main className="max-w-4xl mx-auto mt-4">
