@@ -1,6 +1,6 @@
 {
-    "tasks": [
-        {
+  "tasks": [
+    {
             "id": "7ad11e91-75a8-488d-8e37-70d70c6b2ce8",
             "text": "do laundry"
         },
@@ -8,5 +8,12 @@
             "id": "d187a113-bc4f-4c08-b691-8cf2b4d3292f",
             "text": "take a dog for a walk"
         }
-    ]
+    ],
+  "users": [
+    {
+      "id": "693dd39d-76df-4755-b3aa-b0b979eb63ac",
+      "email": "test@email.com",
+      "password": "$2a$10$s8VThbBnkv/kV2P285aco.ddnab3bzb7b0u0mJsGHyxX0ZrcmrBKC"
+    }
+  ]
 }
