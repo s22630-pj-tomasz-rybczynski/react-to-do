@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
-import AddTask from "./components/AddTask";
-import TodoList from "./components/TodoList";
-import { getAllTodos } from "./api";
-import { ITask } from "./types/tasks";
+import AddTask from "../components/AddTask";
+import TodoList from "../components/TodoList";
+import { getAllTodos } from "../api";
+import { ITask } from "../types/tasks";
 
 export default function Home() {
 

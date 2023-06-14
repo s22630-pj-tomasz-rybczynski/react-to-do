@@ -1,9 +1,17 @@
-import React from 'react';
-import Home from './home';
+import { Routes, Route } from "react-router-dom";
+import Register from './pages/register';
+import Whoops404 from "./pages/whoops";
+import Home from "./pages/home";
 
 function App() {
   return (
-    <Home />
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Whoops404 />} />
+      </Routes>
+    </div>
   );
 }
 
