@@ -4,7 +4,7 @@ interface ModalProps {
     modalOpen: boolean;
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
     children: React.ReactNode;
-    handleSubmit: FormEventHandler<HTMLFormElement>;
+    handleSubmit?: FormEventHandler<HTMLFormElement>;
 }
 
 const Modal: React.FC<ModalProps> = ({modalOpen, setModalOpen, children, handleSubmit}) => {
