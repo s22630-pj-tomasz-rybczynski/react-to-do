@@ -1,4 +1,5 @@
 import { ITask } from './types/tasks'
+import { IUser } from './types/users'
 
 const baseUrl = 'http://localhost:3001';
 
@@ -39,5 +40,24 @@ export const deleteTodo = async (id: string): Promise<void> => {
         method: 'DELETE'
         }
     );
+};
+
+export const getAllUsers = async (): Promise<IUser[]> => {
+    const res = await fetch(`${baseUrl}/users`, {cache: 'no-store'});
+
+    return await res.json();
+};
+
+export const addUser = async (user: IUser): Promise<IUser> => {
+    const res = await fetch(`${baseUrl}/users`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user)
+        }
+    );
+
+    return await res.json();
 };
 

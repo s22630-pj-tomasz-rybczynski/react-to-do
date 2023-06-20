@@ -1,37 +1,50 @@
+import { getAllUsers, addUser } from "../api"
+import { useNavigate } from "react-router-dom"
+import { IUser } from '../types/users'
+import bcrypt from 'bcryptjs'
+import { v4 as uuidv4 } from 'uuid'
+import { useState } from "react"
+import AuthForm from "../components/AuthForm"
 
-export default function Register() {
+const Register = () => {
+    const [error, setError] = useState("")
+    const navigate = useNavigate()
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
-    return (
-        <main className="max-w-4xl mx-auto mt-4">
-            <div className="text-center my-5 flex flex-col gap-4">
-                <div className="relative flex flex-col justify-center h-screen overflow-hidden">
-                    <div
-                        className="w-full p-6 m-auto bg-white rounded-md shadow-md ring-2 ring-gray-800/50 lg:max-w-xl">
-                        <h1 className="text-3xl font-semibold text-center text-gray-700">React ToDo list</h1>
-                        <form className="space-y-4">
-                            <div>
-                                <label className="label">
-                                    <span className="text-base label-text">Email</span>
-                                </label>
-                                <input type="text" placeholder="Email Address"
-                                    className="w-full input input-bordered" />
-                            </div>
-                            <div>
-                                <label className="label">
-                                    <span className="text-base label-text">Password</span>
-                                </label>
-                                <input type="password" placeholder="Enter Password"
-                                    className="w-full input input-bordered" />
-                            </div>
-                            <div>
-                                <button className="btn btn-block">Sign Up</button>
-                            </div>
-                            <span>Already have an account?
-                                <a href="#" className="text-blue-600 hover:text-blue-800 hover:underline"> Login</a></span>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </main>
-    );
+    const handleRegistration = async (e: React.FormEvent) => {
+        e.preventDefault()
+    
+        try {
+          const users: IUser[] = await getAllUsers()
+          const existingUser: IUser | undefined = users.find(u => u.email === email)
+    
+          if (existingUser) {
+            setError("User with this email already exists")
+          } else {
+            const hashedPassword: string = await bcrypt.hash(password, 10)
+            const newUser: IUser = { id: uuidv4(), email, password: hashedPassword }
+
+            await addUser(newUser)
+
+            navigate("/login")
+          }
+        } catch (error) {
+          console.error("Registration error:", error)
+          setError("Registration failed. Please try again later.")
+        }
+      };
+
+      return (
+          <AuthForm
+            formType="register"
+            handleSubmit={handleRegistration}
+            setEmail={setEmail}
+            setPassword={setPassword}
+            error={error}
+            navigate={navigate}
+          />
+    )
 }
+
+export default Register;
