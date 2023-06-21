@@ -21,6 +21,11 @@
       "id": "fd84c010-8cab-4cdb-a26c-90b580ce81de",
       "email": "kloka@wp.pl",
       "password": "$2a$10$Q8VoKULuU1Std4X3V1yY8./OF0VobzZu/idthXMyuQ9hoOEFydNn."
+    },
+    {
+      "id": "361f1fbe-8f20-403f-b541-525088641afa",
+      "email": "test@test.pl",
+      "password": "$2a$10$6Y3GTjqOfpXWEgo9hqkm7ew0QFFlocUIXyzksaiGqNAhBKqHSa182"
     }
   ]
 }

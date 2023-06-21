@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react"
 import AddTask from "../components/AddTask"
 import { useNavigate } from "react-router-dom"
 import TodoList from "../components/TodoList"
-import { getAllTodos } from "../api"
+import { addTodo, getAllTodos } from "../api"
 import { ITask } from "../types/tasks"
 import { ReactSession } from 'react-client-session'
+import { unparse, parse } from 'papaparse'
 
 export default function Home() {
   const navigate = useNavigate()
   const [tasks, setTasks] = useState<ITask[]>([])
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+
   const user = ReactSession.get("user")
 
   const refreshTodos = () => {
@@ -17,12 +20,52 @@ export default function Home() {
 
   useEffect(() => {
     refreshTodos()
-  }, []);
+  }, [tasks])
 
   const handleLogout = () => {
     ReactSession.remove("user")
     navigate('/login')
-  };
+  }
+
+  const handleExport = async () => {
+      const tasks = await getAllTodos()
+  
+      const blob = new Blob([unparse(tasks)], { type: 'text/csv;charset=utf-8;' })
+  
+      const downloadLink = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+
+      downloadLink.href = url
+      downloadLink.setAttribute('download', 'tasks.csv')
+      downloadLink.click()
+  }
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0]
+      setCsvFile(file)
+    }
+  }
+
+  const handleImport = () => {
+    if (csvFile) {
+      const reader = new FileReader()
+
+      reader.onload = async (event: ProgressEvent<FileReader>) => {
+        if (event.target?.result) {
+          const csvData = event.target.result as string;
+
+          const tasks = parse(csvData, { header: true, skipEmptyLines: true, dynamicTyping: true }).data as ITask[]
+
+          tasks.forEach(addTodo)
+        }
+      }
+
+      reader.readAsText(csvFile)
+      refreshTodos()
+    }
+  }
+  
 
   return (
     <main className="max-w-4xl mx-auto mt-4">
@@ -30,7 +73,7 @@ export default function Home() {
             <h1 className="text-2xl font-bold">React ToDo list</h1>
             {user && (
               <div className="flex justify-between items-center">
-                <span className="mr-2">Welcome, {user.email}</span>
+                <span className="mr-2">Welcome, <b>{user.email}</b></span>
                 <button
                   className="text-red-500 hover:text-red-700"
                   onClick={handleLogout}
@@ -42,6 +85,13 @@ export default function Home() {
             <AddTask refresh={refreshTodos}/>
         </div>
         <TodoList tasks={tasks} refresh={refreshTodos}/>
+        <button className="btn mt-10" onClick={handleExport}>Export Tasks to CSV</button>
+        <div>
+          <input type="file" className="file-input w-full max-w-xs" accept=".csv" onChange={handleFileInputChange} />
+          <button className="btn mt-10" onClick={handleImport} disabled={!csvFile}>
+            Import CSV
+          </button>
+        </div>
     </main>
   );
 }
