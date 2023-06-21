@@ -1,39 +1,51 @@
-import { ITask } from "../types/tasks";
-import { FiEdit, FiDelete } from "react-icons/fi";
+import { ITask } from "../types/tasks"
+import { FiEdit, FiDelete, FiCheckSquare, FiXSquare } from "react-icons/fi"
 import Modal from "./Modal";
-import { FormEventHandler, useState } from "react";
-import { deleteTodo, editTodo } from "../api";
+import { FormEventHandler, useState } from "react"
+import { deleteTodo, editTodo } from "../api"
 
 interface TaskProps {
-    task: ITask;
+    task: ITask,
+    refresh: () => void
 }
 
-const Task: React.FC<TaskProps> = ({task}) => {
+const Task: React.FC<TaskProps> = ({task, refresh}) => {
     const [openModalEdit, setOpenModalEdit] = useState(false);
     const [openModalDel, setOpenModalDel] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState(task.text);
 
     const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async e => {
-        e.preventDefault();
         await editTodo({
             id: task.id,
             text: taskToEdit,
-        });
-        setOpenModalEdit(false);
-        window.location.reload();
-    };
+            done: task.done,
+        })
+        setOpenModalEdit(false)
+        refresh()
+    }
 
     const handleDeleteTask = async (id: string) => {
-        await deleteTodo(id);
-        setOpenModalDel(false);
-        window.location.reload();
-    };
+        await deleteTodo(id)
+        setOpenModalDel(false)
+        refresh()
+    }
+
+    const changeTaskStatus = async () => {
+        await editTodo({
+            id: task.id,
+            text: task.text,
+            done: !task.done
+        })
+        refresh()
+    }
+
 
     return (
         <tr key={task.id}>
-          <td className="w-full">{task.text}</td>
+          <td className={task.done ? "w-full line-through" : "w-full"}>{task.text}</td>
           <td className="flex gap-5">
-            <FiEdit onClick={() => setOpenModalEdit(true)}cursor="pointer" className='text-blue-500' size={25}/>
+            {task.done ? <FiXSquare className='text-yellow-500' cursor="pointer" onClick={changeTaskStatus} size={25} /> : <FiCheckSquare className='text-green-500' cursor="pointer" onClick={changeTaskStatus} size={25} />}
+            <FiEdit onClick={() => setOpenModalEdit(true)} cursor="pointer" className='text-blue-500' size={25}/>
             <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit} handleSubmit={handleSubmitEditTodo}>
                 <h3 className='font-bold text-lg'>Edit task</h3>
                 <div className='modal-action'>

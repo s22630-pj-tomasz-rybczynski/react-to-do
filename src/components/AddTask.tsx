@@ -4,18 +4,25 @@ import { FormEventHandler, useState } from 'react';
 import { addTodo } from '../api';
 import { v4 as uuidv4 } from 'uuid';
 
-const AddTask = () => {
+interface AddTaskProps {
+    refresh: () => void
+}
+
+const AddTask: React.FC<AddTaskProps>  = ({refresh}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [newTaskValue, setNewTaskValue] = useState('');
 
     const handleSubmitNewTodo: FormEventHandler<HTMLFormElement> = async e => {
-        e.preventDefault();
+        e.preventDefault()
+        if(newTaskValue === '') return
         await addTodo({
             id: uuidv4(),
             text: newTaskValue,
-        });
-        setNewTaskValue('');
-        window.location.reload();
+            done: false,
+        })
+        setNewTaskValue('')
+        setModalOpen(false)
+        refresh()
     };
     
     return <div>

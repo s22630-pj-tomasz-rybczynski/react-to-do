@@ -11,8 +11,12 @@ export default function Home() {
   const [tasks, setTasks] = useState<ITask[]>([])
   const user = ReactSession.get("user")
 
-  useEffect(() => {
+  const refreshTodos = () => {
     getAllTodos().then(setTasks);
+  }
+
+  useEffect(() => {
+    refreshTodos()
   }, []);
 
   const handleLogout = () => {
@@ -35,9 +39,9 @@ export default function Home() {
                 </button>
               </div>
             )}
-            <AddTask />
+            <AddTask refresh={refreshTodos}/>
         </div>
-        <TodoList tasks={tasks}/>
+        <TodoList tasks={tasks} refresh={refreshTodos}/>
     </main>
   );
 }
