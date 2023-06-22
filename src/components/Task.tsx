@@ -1,4 +1,4 @@
-import { ITask } from "../types/tasks"
+import { ITask, Priority } from "../types/tasks"
 import { FiEdit, FiDelete, FiCheckSquare, FiXSquare } from "react-icons/fi"
 import Modal from "./Modal";
 import { FormEventHandler, useState } from "react"
@@ -18,6 +18,7 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
         await editTodo({
             id: task.id,
             text: taskToEdit,
+            priority: task.priority,
             done: task.done,
         })
         setOpenModalEdit(false)
@@ -34,15 +35,26 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
         await editTodo({
             id: task.id,
             text: task.text,
+            priority: task.priority,
             done: !task.done
         })
         refresh()
     }
 
+    const priorityColor = () => {
+        switch (task.priority) {
+            case Priority.LOW:
+                return <p className='text-green-500'>LOW</p>
+            case Priority.MEDIUM:
+                return <p className='text-yellow-500'>MEDIUM</p>
+            case Priority.HIGH:
+                return <p className='text-red-500'>HIGH</p>
+        }
+    }
 
     return (
         <tr key={task.id}>
-          <td className={task.done ? "w-full line-through" : "w-full"}>{task.text}</td>
+          <td className={task.done ? "w-full line-through" : "w-full"}>{task.text}{priorityColor()}</td>
           <td className="flex gap-5">
             {task.done ? <FiXSquare className='text-yellow-500' cursor="pointer" onClick={changeTaskStatus} size={25} /> : <FiCheckSquare className='text-green-500' cursor="pointer" onClick={changeTaskStatus} size={25} />}
             <FiEdit onClick={() => setOpenModalEdit(true)} cursor="pointer" className='text-blue-500' size={25}/>

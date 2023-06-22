@@ -2,6 +2,7 @@ import {AiOutlinePlus} from 'react-icons/ai'
 import Modal from './Modal';
 import { FormEventHandler, useState } from 'react';
 import { addTodo } from '../api';
+import { Priority } from '../types/tasks';
 import { v4 as uuidv4 } from 'uuid';
 
 interface AddTaskProps {
@@ -11,6 +12,7 @@ interface AddTaskProps {
 const AddTask: React.FC<AddTaskProps>  = ({refresh}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [newTaskValue, setNewTaskValue] = useState('');
+    const [priority, setPriority] = useState<Priority>(Priority.MEDIUM);
 
     const handleSubmitNewTodo: FormEventHandler<HTMLFormElement> = async e => {
         e.preventDefault()
@@ -18,6 +20,7 @@ const AddTask: React.FC<AddTaskProps>  = ({refresh}) => {
         await addTodo({
             id: uuidv4(),
             text: newTaskValue,
+            priority: priority,
             done: false,
         })
         setNewTaskValue('')
@@ -25,24 +28,38 @@ const AddTask: React.FC<AddTaskProps>  = ({refresh}) => {
         refresh()
     };
     
-    return <div>
-        <button onClick={() => setModalOpen(true)} className="btn btn-primary w-full">Add new task
-        <AiOutlinePlus size={18} className='ml-2' />
-        </button>
-        <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} handleSubmit={handleSubmitNewTodo}>
-            <h3 className='font-bold text-lg'>Add new task</h3>
-            <div className='modal-action'>
+    return (
+        <div>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="btn btn-primary w-full"
+          >
+            Add new task <AiOutlinePlus size={18} className="ml-2" />
+          </button>
+          <Modal
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            handleSubmit={handleSubmitNewTodo}
+          >
+            <h3 className="font-bold text-lg">Add new task</h3>
+            <div className="modal-action">
                 <input
                     value={newTaskValue}
-                    onChange={e => setNewTaskValue(e.target.value)}
+                    onChange={(e) => setNewTaskValue(e.target.value)}
                     type="text"
-                    placeholder='Type here'
-                    className='input input-bordered w-full'
+                    placeholder="Type here"
+                    className="input input-bordered w-full"
                 />
-                <button type='submit' className='btn'>Submit</button>
+                <input type="radio" name="priority" className="radio radio-success" onClick={() => setPriority(Priority.LOW)} />
+                <input type="radio" name="priority" className="radio radio-warning" onClick={() => setPriority(Priority.MEDIUM)} checked />
+                <input type="radio" name="priority" className="radio radio-error" onClick={() => setPriority(Priority.HIGH)} />
+              <button type="submit" className="btn">
+                Submit
+              </button>
             </div>
-        </Modal>
-    </div>;
-};
+          </Modal>
+        </div>
+      )
+    }    
 
 export default AddTask;
