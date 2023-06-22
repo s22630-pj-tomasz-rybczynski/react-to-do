@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import Task from "./Task"
 import { useTasks } from "../context/TaskContext"
 
@@ -10,7 +10,7 @@ const TodoList: React.FC<TodoListProps> = ({ refresh }) => {
   const [sort, setSort] = useState<"priority" | "done" | "date">("priority")
   const { taskState } = useTasks()!
 
-  const sortTasks = () => {
+  const sortTasks = useMemo(() =>  {
     if(sort === 'priority') {
       return taskState.tasks.sort((a, b) => b.priority - a.priority).map(task => 
         <Task task={task} key={task.id} refresh={refresh}/>
@@ -22,7 +22,7 @@ const TodoList: React.FC<TodoListProps> = ({ refresh }) => {
       return taskState.tasks.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()).map(task =>
         <Task task={task} key={task.id} refresh={refresh}/>)
     }
-  }
+  }, [refresh, sort, taskState.tasks])
 
   return (
       <div className="overflow-x-auto">
@@ -58,7 +58,7 @@ const TodoList: React.FC<TodoListProps> = ({ refresh }) => {
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>{sortTasks()}</tbody>
+          <tbody>{sortTasks}</tbody>
         </table>
       </div>
   )
