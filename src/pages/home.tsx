@@ -20,7 +20,7 @@ export default function Home() {
 
   useEffect(() => {
     refreshTodos()
-  }, [tasks])
+  }, [])
 
   const handleLogout = () => {
     ReactSession.remove("user")
@@ -57,12 +57,14 @@ export default function Home() {
 
           const tasks = parse(csvData, { header: true, skipEmptyLines: true, dynamicTyping: true }).data as ITask[]
 
-          tasks.forEach(addTodo)
+          for (const task of tasks){
+            await addTodo(task)
+          }
+          refreshTodos()
         }
       }
 
       reader.readAsText(csvFile)
-      refreshTodos()
     }
   }
   
