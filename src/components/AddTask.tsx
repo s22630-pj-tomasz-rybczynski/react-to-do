@@ -5,6 +5,7 @@ import { addTodo } from '../api'
 import { ITask, Priority } from '../types/tasks'
 import { v4 as uuidv4 } from 'uuid'
 import CustomDatePicker from './DatePicker'
+import { ReactSession } from 'react-client-session'
 import { useTasks } from '../context/TaskContext'
 
 const AddTask: React.FC = () => {
@@ -13,6 +14,7 @@ const AddTask: React.FC = () => {
   const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
   const [date, setDate] = useState<Date | null>(new Date())
   const { taskDispatch } = useTasks()
+  const user = ReactSession.get("user")
 
   const handleSubmitNewTodo = useCallback(() => {
     const task: ITask = {
@@ -21,6 +23,7 @@ const AddTask: React.FC = () => {
       priority: priority,
       done: false,
       deadline: date ? date : new Date(),
+      user_id: user.id
     }
     
     const addTodoAsync = async () => {
@@ -31,7 +34,7 @@ const AddTask: React.FC = () => {
     addTodoAsync()
     setNewTaskValue('')
     setModalOpen(false)
-  }, [taskDispatch, newTaskValue, priority, date])
+  }, [newTaskValue, priority, date, user.id, taskDispatch])
 
   return (
     <div>

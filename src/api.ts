@@ -3,8 +3,8 @@ import { IUser } from './types/users'
 
 const baseUrl = 'http://localhost:3001';
 
-export const getAllTodos = async (): Promise<ITask[]> => {
-    const res = await fetch(`${baseUrl}/tasks`, {cache: 'no-store'})
+export const getAllTodos = async (userId: string): Promise<ITask[]> => {
+    const res = await fetch(`${baseUrl}/tasks?user_id=${userId}`, {cache: 'no-store'})
 
     return await res.json()
 };

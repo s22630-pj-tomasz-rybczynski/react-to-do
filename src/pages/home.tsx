@@ -16,8 +16,10 @@ export default function Home() {
   const user = ReactSession.get("user")
 
   const refreshTodos = useCallback(() => {        
-    getAllTodos().then(tasks => {
-      taskDispatch({ type: 'SET_TASKS', payload: tasks })})
+    if(user) {
+      getAllTodos(user.id).then(tasks => {
+        taskDispatch({ type: 'SET_TASKS', payload: tasks })})
+    }
   }, [])
 
   useEffect(() => {
@@ -67,12 +69,12 @@ export default function Home() {
       reader.readAsText(csvFile)
     }
   }
-  
-  return (
+
+  if(user){
+    return (
       <main className="max-w-4xl mx-auto mt-4">
           <div className="text-center my-5 flex flex-col gap-4">
               <h1 className="text-2xl font-bold">React ToDo list</h1>
-              {user && (
                 <div className="flex justify-between items-center">
                   <span className="mr-2">Welcome, <b>{user.email}</b></span>
                   <button
@@ -82,7 +84,6 @@ export default function Home() {
                     Logout
                   </button>
                 </div>
-              )}
               <AddTask />
           </div>
           <TodoList refresh={refreshTodos}/>
@@ -95,4 +96,19 @@ export default function Home() {
           </div>
       </main>
   )
+  } else {
+    return(
+      <div className="text-center my-5 flex flex-col gap-4">
+          <h1 className="text-2xl font-bold">Unauthorized</h1>
+            <span>
+              <a href="/register" className="text-blue-600 hover:text-blue-800 hover:underline" onClick={() => navigate('/register')}>
+                Register
+              </a>{" or "}
+              <a href="/login" className="text-blue-600 hover:text-blue-800 hover:underline" onClick={() => navigate('/login')}>
+                Login
+              </a>
+            </span>
+      </div>
+    )
+  }
 }

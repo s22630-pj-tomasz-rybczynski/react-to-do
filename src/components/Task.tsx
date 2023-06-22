@@ -3,7 +3,8 @@ import { FiEdit, FiDelete, FiCheckSquare, FiXSquare } from "react-icons/fi"
 import Modal from "./Modal";
 import { useCallback, useState, useEffect } from "react"
 import { deleteTodo, editTodo } from "../api"
-import { useTasks } from "../context/TaskContext";
+import { useTasks } from "../context/TaskContext"
+import { ReactSession } from 'react-client-session'
 
 interface TaskProps {
     task: ITask,
@@ -15,6 +16,7 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
     const [openModalDel, setOpenModalDel] = useState(false)
     const [taskToEdit, setTaskToEdit] = useState(task.text)
     const { taskDispatch } = useTasks()
+    const user = ReactSession.get("user")
 
     const handleSubmitEditTodo = useCallback(() => {
         const editedTask: ITask = {
@@ -22,7 +24,8 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
             text: taskToEdit,
             priority: task.priority,
             done: task.done,
-            deadline: task.deadline
+            deadline: task.deadline,
+            user_id: user.id
         }
         
         const editTaskAsync = async () => {
@@ -32,7 +35,7 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
         editTaskAsync()
         taskDispatch({ type: 'EDIT_TASK', payload: editedTask })
         setOpenModalEdit(false)
-      }, [task.deadline, task.done, task.id, task.priority, taskDispatch, taskToEdit])
+      }, [task.deadline, task.done, task.id, task.priority, taskDispatch, taskToEdit, user.id])
 
     const handleDeleteTask = useCallback(() => {        
         const deleteTaskAsync = async () => {
@@ -51,13 +54,14 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
                 text: task.text,
                 priority: task.priority,
                 done: !task.done,
-                deadline: task.deadline
+                deadline: task.deadline,
+                user_id: user.id
             })
         }
     
         taskDispatch({ type: 'CHANGE_STATUS', payload: {id: task.id} })
         changeTaskStatusAsync()
-      }, [task.deadline, task.done, task.id, task.priority, task.text, taskDispatch])
+      }, [task.deadline, task.done, task.id, task.priority, task.text, taskDispatch, user.id])
 
     const priorityColor = () => {
         switch (task.priority) {

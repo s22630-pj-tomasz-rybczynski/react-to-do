@@ -3,7 +3,8 @@ export interface ITask {
     text: string,
     priority: Priority,
     done: boolean,
-    deadline: Date
+    deadline: Date,
+    user_id: string
 }
 
 export enum Priority {

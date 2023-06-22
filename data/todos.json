@@ -1,46 +1,59 @@
 {
   "tasks": [
     {
-      "id": "7ad11e91-75a8-488d-8e37-70d70c6b2ce8",
-      "text": "do laundry",
+      "id": "d932c37d-e748-433b-a709-393e29c82f9c",
+      "text": "adwadaw",
+      "priority": 3,
+      "done": false,
+      "deadline": "2023-06-22T20:51:56.019Z",
+      "user_id": "361f1fbe-8f20-403f-b541-525088641afa"
+    },
+    {
+      "id": "48520d74-abf3-45c4-ba7d-7169cd51a380",
+      "text": "2134",
+      "priority": 3,
+      "done": true,
+      "deadline": "2023-06-22T21:51:06.672Z",
+      "user_id": "361f1fbe-8f20-403f-b541-525088641afa"
+    },
+    {
+      "id": "d187a113-bc4f-4c08-b691-8cf2b4d3293e",
+      "text": "imported 2",
+      "priority": 1,
+      "done": false,
+      "deadline": "2023-05-10T18:11:13.000Z",
+      "user_id": "361f1fbe-8f20-403f-b541-525088641afa"
+    },
+    {
+      "id": "b26aecba-babb-4fb9-b551-a490f2ee4a87",
+      "text": "another user task",
       "priority": 2,
       "done": true,
-      "deadline": "2023-06-16T18:11:13.000Z"
+      "deadline": "2023-06-05T22:21:35.000Z",
+      "user_id": "693dd39d-76df-4755-b3aa-b0b979eb63ac"
     },
     {
-      "id": "d187a113-bc4f-4c08-b691-8cf2b4d3292f",
-      "text": "take a dog for a walk",
-      "priority": 1,
+      "id": "1d4f73d5-7aff-4bf8-82b7-9ce243089ed6",
+      "text": "dwadaw",
+      "priority": 2,
       "done": false,
-      "deadline": "2023-05-10T18:11:13.000Z"
+      "deadline": "2023-06-22T22:32:20.053Z",
+      "user_id": "361f1fbe-8f20-403f-b541-525088641afa"
     },
     {
-      "id": "7ad11e91-75a8-488d-8e37-8cf2b4d3292f",
-      "text": "import task",
+      "id": "a43656b1-d4a7-424a-80e9-6ddd7c88ccc5",
+      "text": "awdawdadwd",
       "priority": 3,
       "done": false,
-      "deadline": "2023-05-14T18:11:13.000Z"
-    },
-    {
-      "id": "d187a113-bc4f-4c08-b691-70d70c6b2ce8",
-      "text": "export task",
-      "priority": 1,
-      "done": true,
-      "deadline": "2023-05-15T18:11:13.000Z"
-    },
-    {
-      "id": "b9025892-ed73-4d0c-bfe4-8ab69fba739b",
-      "text": "test test",
-      "priority": 3,
-      "done": false,
-      "deadline": "2023-06-30T18:24:12.000Z"
+      "deadline": "2023-06-27T22:49:35.000Z",
+      "user_id": "693dd39d-76df-4755-b3aa-b0b979eb63ac"
     }
   ],
   "users": [
     {
       "id": "693dd39d-76df-4755-b3aa-b0b979eb63ac",
       "email": "test@email.com",
-      "password": "$2a$10$s8VThbBnkv/kV2P285aco.ddnab3bzb7b0u0mJsGHyxX0ZrcmrBKC"
+      "password": "$2a$10$cxQD.X5qqPiR/bVRTaob7eG3q9B47BXfuAJmV/FQforrYert5yaZ6"
     },
     {
       "id": "fd84c010-8cab-4cdb-a26c-90b580ce81de",
