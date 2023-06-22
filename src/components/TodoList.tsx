@@ -8,7 +8,7 @@ interface TodoListProps {
 }
 
 const TodoList: React.FC<TodoListProps> = ({ tasks, refresh }) => {
-  const [sort, setSort] = useState<"priority" | "done">("priority");
+  const [sort, setSort] = useState<"priority" | "done" | "date">("priority");
 
   const sortTasks = () => {
     if(sort === 'priority') {
@@ -17,6 +17,9 @@ const TodoList: React.FC<TodoListProps> = ({ tasks, refresh }) => {
         )
     } else if(sort === 'done') {
       return tasks.sort((a, _) => a.done ? -1 : 1).map(task =>
+        <Task task={task} key={task.id} refresh={refresh}/>)
+    } else if(sort === 'date') {
+      return tasks.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()).map(task =>
         <Task task={task} key={task.id} refresh={refresh}/>)
     }
   }
@@ -45,6 +48,7 @@ const TodoList: React.FC<TodoListProps> = ({ tasks, refresh }) => {
             type="radio"
             name="options"
             data-title="DATE"
+            onClick={() => setSort("date")}
             className="btn"
           />
         </div>

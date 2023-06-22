@@ -20,6 +20,7 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
             text: taskToEdit,
             priority: task.priority,
             done: task.done,
+            deadline: task.deadline
         })
         setOpenModalEdit(false)
         refresh()
@@ -36,7 +37,8 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
             id: task.id,
             text: task.text,
             priority: task.priority,
-            done: !task.done
+            done: !task.done,
+            deadline: task.deadline
         })
         refresh()
     }
@@ -54,7 +56,7 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
 
     return (
         <tr key={task.id}>
-          <td className={task.done ? "w-full line-through" : "w-full"}>{task.text}{priorityColor()}</td>
+          <td className="w-full"><p className={task.done ? "line-through" : ""}>{task.text}</p>{priorityColor()}{task.deadline.toLocaleString()}</td>
           <td className="flex gap-5">
             {task.done ? <FiXSquare className='text-yellow-500' cursor="pointer" onClick={changeTaskStatus} size={25} /> : <FiCheckSquare className='text-green-500' cursor="pointer" onClick={changeTaskStatus} size={25} />}
             <FiEdit onClick={() => setOpenModalEdit(true)} cursor="pointer" className='text-blue-500' size={25}/>

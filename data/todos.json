@@ -4,31 +4,36 @@
       "id": "7ad11e91-75a8-488d-8e37-70d70c6b2ce8",
       "text": "do laundry",
       "priority": 2,
-      "done": true
+      "done": true,
+      "deadline": "2023-06-16T18:11:13.000Z"
     },
     {
       "id": "d187a113-bc4f-4c08-b691-8cf2b4d3292f",
       "text": "take a dog for a walk",
       "priority": 1,
-      "done": false
+      "done": false,
+      "deadline": "2023-05-10T18:11:13.000Z"
     },
     {
       "id": "7ad11e91-75a8-488d-8e37-8cf2b4d3292f",
       "text": "import task",
       "priority": 3,
-      "done": false
+      "done": false,
+      "deadline": "2023-05-14T18:11:13.000Z"
     },
     {
       "id": "d187a113-bc4f-4c08-b691-70d70c6b2ce8",
       "text": "export task",
       "priority": 1,
-      "done": true
+      "done": true,
+      "deadline": "2023-05-15T18:11:13.000Z"
     },
     {
-      "id": "7ef5427b-cea9-4d78-8460-33220e10187b",
-      "text": "test",
-      "priority": 2,
-      "done": true
+      "id": "b9025892-ed73-4d0c-bfe4-8ab69fba739b",
+      "text": "test test",
+      "priority": 3,
+      "done": false,
+      "deadline": "2023-06-30T18:24:12.000Z"
     }
   ],
   "users": [

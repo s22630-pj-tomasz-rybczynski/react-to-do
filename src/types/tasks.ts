@@ -2,7 +2,8 @@ export interface ITask {
     id: string,
     text: string,
     priority: Priority,
-    done: boolean
+    done: boolean,
+    deadline: Date
 }
 
 export enum Priority {
