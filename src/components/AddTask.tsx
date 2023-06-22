@@ -1,35 +1,37 @@
 import { AiOutlinePlus } from 'react-icons/ai'
 import Modal from './Modal'
-import { FormEventHandler, useState } from 'react'
+import { useState, useCallback } from 'react'
 import { addTodo } from '../api'
-import { Priority } from '../types/tasks'
+import { ITask, Priority } from '../types/tasks'
 import { v4 as uuidv4 } from 'uuid'
 import CustomDatePicker from './DatePicker'
+import { useTasks } from '../context/TaskContext'
 
-interface AddTaskProps {
-  refresh: () => void
-}
-
-const AddTask: React.FC<AddTaskProps> = ({ refresh }) => {
+const AddTask: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const [newTaskValue, setNewTaskValue] = useState('')
   const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
   const [date, setDate] = useState<Date | null>(new Date())
+  const { taskDispatch } = useTasks()
 
-  const handleSubmitNewTodo: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault()
-    if (newTaskValue === '') return
-    await addTodo({
+  const handleSubmitNewTodo = useCallback(() => {
+    const task: ITask = {
       id: uuidv4(),
       text: newTaskValue,
       priority: priority,
       done: false,
       deadline: date ? date : new Date(),
-    })
+    }
+    
+    const addTodoAsync = async () => {
+      await addTodo(task)
+    }
+
+    taskDispatch({ type: 'ADD_TASK', payload: task })
+    addTodoAsync()
     setNewTaskValue('')
     setModalOpen(false)
-    refresh()
-  }
+  }, [taskDispatch, newTaskValue, priority, date])
 
   return (
     <div>

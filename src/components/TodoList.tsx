@@ -1,31 +1,30 @@
 import React, { useState } from "react"
-import { ITask } from "../types/tasks"
 import Task from "./Task"
+import { useTasks } from "../context/TaskContext"
 
 interface TodoListProps {
-  tasks: ITask[]
   refresh: () => void
 }
 
-const TodoList: React.FC<TodoListProps> = ({ tasks, refresh }) => {
-  const [sort, setSort] = useState<"priority" | "done" | "date">("priority");
+const TodoList: React.FC<TodoListProps> = ({ refresh }) => {
+  const [sort, setSort] = useState<"priority" | "done" | "date">("priority")
+  const { taskState } = useTasks()!
 
   const sortTasks = () => {
     if(sort === 'priority') {
-      return tasks.sort((a, b) => b.priority - a.priority).map(task => 
+      return taskState.tasks.sort((a, b) => b.priority - a.priority).map(task => 
         <Task task={task} key={task.id} refresh={refresh}/>
         )
     } else if(sort === 'done') {
-      return tasks.sort((a, _) => a.done ? -1 : 1).map(task =>
+      return taskState.tasks.sort((a, _) => a.done ? -1 : 1).map(task =>
         <Task task={task} key={task.id} refresh={refresh}/>)
     } else if(sort === 'date') {
-      return tasks.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()).map(task =>
+      return taskState.tasks.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()).map(task =>
         <Task task={task} key={task.id} refresh={refresh}/>)
     }
   }
 
   return (
-    <>
       <div className="overflow-x-auto">
         <div className="btn-group">
           <input
@@ -62,7 +61,6 @@ const TodoList: React.FC<TodoListProps> = ({ tasks, refresh }) => {
           <tbody>{sortTasks()}</tbody>
         </table>
       </div>
-    </>
   )
 }
 

@@ -1,8 +1,9 @@
 import { ITask, Priority } from "../types/tasks"
 import { FiEdit, FiDelete, FiCheckSquare, FiXSquare } from "react-icons/fi"
 import Modal from "./Modal";
-import { FormEventHandler, useState } from "react"
+import { useCallback, useState, useEffect } from "react"
 import { deleteTodo, editTodo } from "../api"
+import { useTasks } from "../context/TaskContext";
 
 interface TaskProps {
     task: ITask,
@@ -10,38 +11,53 @@ interface TaskProps {
 }
 
 const Task: React.FC<TaskProps> = ({task, refresh}) => {
-    const [openModalEdit, setOpenModalEdit] = useState(false);
-    const [openModalDel, setOpenModalDel] = useState(false);
-    const [taskToEdit, setTaskToEdit] = useState(task.text);
+    const [openModalEdit, setOpenModalEdit] = useState(false)
+    const [openModalDel, setOpenModalDel] = useState(false)
+    const [taskToEdit, setTaskToEdit] = useState(task.text)
+    const { taskDispatch } = useTasks()
 
-    const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async e => {
-        await editTodo({
+    const handleSubmitEditTodo = useCallback(() => {
+        const editedTask: ITask = {
             id: task.id,
             text: taskToEdit,
             priority: task.priority,
             done: task.done,
             deadline: task.deadline
-        })
+        }
+        
+        const editTaskAsync = async () => {
+          await editTodo(editedTask)
+        }
+    
+        editTaskAsync()
+        taskDispatch({ type: 'EDIT_TASK', payload: editedTask })
         setOpenModalEdit(false)
-        refresh()
-    }
+      }, [task.deadline, task.done, task.id, task.priority, taskDispatch, taskToEdit])
 
-    const handleDeleteTask = async (id: string) => {
-        await deleteTodo(id)
+    const handleDeleteTask = useCallback(() => {        
+        const deleteTaskAsync = async () => {
+          await deleteTodo(task.id)
+        }
+    
+        deleteTaskAsync()
+        taskDispatch({ type: 'DELETE_TASK', payload: {id: task.id} })
         setOpenModalDel(false)
-        refresh()
-    }
+      }, [task.id, taskDispatch])
 
-    const changeTaskStatus = async () => {
-        await editTodo({
-            id: task.id,
-            text: task.text,
-            priority: task.priority,
-            done: !task.done,
-            deadline: task.deadline
-        })
-        refresh()
-    }
+    const changeTaskStatus = useCallback(() => {        
+        const changeTaskStatusAsync = async () => {
+            await editTodo({
+                id: task.id,
+                text: task.text,
+                priority: task.priority,
+                done: !task.done,
+                deadline: task.deadline
+            })
+        }
+    
+        taskDispatch({ type: 'CHANGE_STATUS', payload: {id: task.id} })
+        changeTaskStatusAsync()
+      }, [task.deadline, task.done, task.id, task.priority, task.text, taskDispatch])
 
     const priorityColor = () => {
         switch (task.priority) {
@@ -53,6 +69,10 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
                 return <p className='text-red-500'>HIGH</p>
         }
     }
+
+    useEffect(() => {
+        refresh()
+    },[changeTaskStatus, refresh, ])
 
     return (
         <tr key={task.id}>
@@ -77,7 +97,7 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
             <Modal modalOpen={openModalDel} setModalOpen={setOpenModalDel}>
                 <h3 className='font-bold text-lg'>Are you sure, you want to delete this task?</h3>
                 <div className="modal-action">
-                    <button onClick={() => handleDeleteTask(task.id)} className="btn">Yes</button>
+                    <button onClick={handleDeleteTask} className="btn">Yes</button>
                 </div>
             </Modal>
             </td>

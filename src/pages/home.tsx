@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import AddTask from "../components/AddTask"
 import { useNavigate } from "react-router-dom"
 import TodoList from "../components/TodoList"
@@ -6,17 +6,19 @@ import { addTodo, getAllTodos } from "../api"
 import { ITask } from "../types/tasks"
 import { ReactSession } from 'react-client-session'
 import { unparse, parse } from 'papaparse'
+import { useTasks } from "../context/TaskContext"
 
 export default function Home() {
   const navigate = useNavigate()
-  const [tasks, setTasks] = useState<ITask[]>([])
-  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvFile, setCsvFile] = useState<File | null>(null)
+  const { taskState, taskDispatch } = useTasks()!
 
   const user = ReactSession.get("user")
 
-  const refreshTodos = () => {
-    getAllTodos().then(setTasks);
-  }
+  const refreshTodos = useCallback(() => {        
+    getAllTodos().then(tasks => {
+      taskDispatch({ type: 'SET_TASKS', payload: tasks })})
+  }, [])
 
   useEffect(() => {
     refreshTodos()
@@ -27,17 +29,15 @@ export default function Home() {
     navigate('/login')
   }
 
-  const handleExport = async () => {
-      const tasks = await getAllTodos()
-  
-      const blob = new Blob([unparse(tasks)], { type: 'text/csv;charset=utf-8;' })
-  
-      const downloadLink = document.createElement('a')
-      const url = URL.createObjectURL(blob)
+  const handleExport = () => {
+    const blob = new Blob([unparse(taskState.tasks)], { type: 'text/csv;charset=utf-8;' })
 
-      downloadLink.href = url
-      downloadLink.setAttribute('download', 'tasks.csv')
-      downloadLink.click()
+    const downloadLink = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+
+    downloadLink.href = url
+    downloadLink.setAttribute('download', 'tasks.csv')
+    downloadLink.click()
   }
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,32 +68,31 @@ export default function Home() {
     }
   }
   
-
   return (
-    <main className="max-w-4xl mx-auto mt-4">
-        <div className="text-center my-5 flex flex-col gap-4">
-            <h1 className="text-2xl font-bold">React ToDo list</h1>
-            {user && (
-              <div className="flex justify-between items-center">
-                <span className="mr-2">Welcome, <b>{user.email}</b></span>
-                <button
-                  className="text-red-500 hover:text-red-700"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-            <AddTask refresh={refreshTodos}/>
-        </div>
-        <TodoList tasks={tasks} refresh={refreshTodos}/>
-        <button className="btn mt-10" onClick={handleExport}>Export Tasks to CSV</button>
-        <div>
-          <input type="file" className="file-input w-full max-w-xs" accept=".csv" onChange={handleFileInputChange} />
-          <button className="btn mt-10" onClick={handleImport} disabled={!csvFile}>
-            Import CSV
-          </button>
-        </div>
-    </main>
-  );
+      <main className="max-w-4xl mx-auto mt-4">
+          <div className="text-center my-5 flex flex-col gap-4">
+              <h1 className="text-2xl font-bold">React ToDo list</h1>
+              {user && (
+                <div className="flex justify-between items-center">
+                  <span className="mr-2">Welcome, <b>{user.email}</b></span>
+                  <button
+                    className="text-red-500 hover:text-red-700"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+              <AddTask />
+          </div>
+          <TodoList refresh={refreshTodos}/>
+          <button className="btn mt-10" onClick={handleExport}>Export Tasks to CSV</button>
+          <div>
+            <input type="file" className="file-input w-full max-w-xs" accept=".csv" onChange={handleFileInputChange} />
+            <button className="btn mt-10" onClick={handleImport} disabled={!csvFile}>
+              Import CSV
+            </button>
+          </div>
+      </main>
+  )
 }
