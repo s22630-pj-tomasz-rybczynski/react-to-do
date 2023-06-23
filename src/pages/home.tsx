@@ -11,7 +11,7 @@ import { useTasks } from "../context/TaskContext"
 export default function Home() {
   const navigate = useNavigate()
   const [csvFile, setCsvFile] = useState<File | null>(null)
-  const { taskState, taskDispatch } = useTasks()!
+  const { taskState, taskDispatch } = useTasks()
 
   const user = ReactSession.get("user")
 

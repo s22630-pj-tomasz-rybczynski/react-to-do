@@ -28,39 +28,28 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
             user_id: user.id
         }
         
-        const editTaskAsync = async () => {
-          await editTodo(editedTask)
-        }
-    
-        editTaskAsync()
-        taskDispatch({ type: 'EDIT_TASK', payload: editedTask })
-        setOpenModalEdit(false)
+        editTodo(editedTask).then(() => {
+            taskDispatch({ type: 'EDIT_TASK', payload: editedTask })
+            setOpenModalEdit(false)
+        })
       }, [task.deadline, task.done, task.id, task.priority, taskDispatch, taskToEdit, user.id])
 
     const handleDeleteTask = useCallback(() => {        
-        const deleteTaskAsync = async () => {
-          await deleteTodo(task.id)
-        }
-    
-        deleteTaskAsync()
-        taskDispatch({ type: 'DELETE_TASK', payload: {id: task.id} })
-        setOpenModalDel(false)
+        deleteTodo(task.id).then(() => {
+            taskDispatch({ type: 'DELETE_TASK', payload: {id: task.id} })
+            setOpenModalDel(false)
+        })
       }, [task.id, taskDispatch])
 
-    const changeTaskStatus = useCallback(() => {        
-        const changeTaskStatusAsync = async () => {
-            await editTodo({
-                id: task.id,
-                text: task.text,
-                priority: task.priority,
-                done: !task.done,
-                deadline: task.deadline,
-                user_id: user.id
-            })
-        }
-    
-        taskDispatch({ type: 'CHANGE_STATUS', payload: {id: task.id} })
-        changeTaskStatusAsync()
+    const changeTaskStatus = useCallback(async () => {        
+        editTodo({
+            id: task.id,
+            text: task.text,
+            priority: task.priority,
+            done: !task.done,
+            deadline: task.deadline,
+            user_id: user.id
+        }).then(() => taskDispatch({ type: 'CHANGE_STATUS', payload: {id: task.id} }))
       }, [task.deadline, task.done, task.id, task.priority, task.text, taskDispatch, user.id])
 
     const priorityColor = () => {

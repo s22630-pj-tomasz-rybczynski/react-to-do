@@ -25,15 +25,13 @@ const AddTask: React.FC = () => {
       deadline: date ? date : new Date(),
       user_id: user.id
     }
-    
-    const addTodoAsync = async () => {
-      await addTodo(task)
-    }
 
-    taskDispatch({ type: 'ADD_TASK', payload: task })
-    addTodoAsync()
-    setNewTaskValue('')
-    setModalOpen(false)
+    addTodo(task).then(() => {
+      taskDispatch({ type: 'ADD_TASK', payload: task })
+      setNewTaskValue('')
+      setModalOpen(false)
+      }
+    )
   }, [newTaskValue, priority, date, user.id, taskDispatch])
 
   return (
