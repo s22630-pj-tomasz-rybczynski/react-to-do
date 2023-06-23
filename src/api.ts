@@ -1,7 +1,7 @@
 import { ITask } from './types/tasks'
 import { IUser } from './types/users'
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'https://to-do-json-server.vercel.app';
 
 export const getAllTodos = async (userId: string): Promise<ITask[]> => {
     const res = await fetch(`${baseUrl}/tasks?user_id=${userId}`, {cache: 'no-store'})
