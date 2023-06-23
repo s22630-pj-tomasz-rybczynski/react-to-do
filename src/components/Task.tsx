@@ -1,22 +1,22 @@
-import { ITask, Priority } from "../types/tasks"
-import { FiEdit, FiDelete, FiCheckSquare, FiXSquare } from "react-icons/fi"
-import Modal from "./Modal";
-import { useCallback, useState, useEffect } from "react"
-import { deleteTodo, editTodo } from "../api"
-import { useTasks } from "../context/TaskContext"
+import { ITask, Priority } from '../types/tasks'
+import { FiEdit, FiDelete, FiCheckSquare, FiXSquare } from 'react-icons/fi'
+import Modal from './Modal'
+import { useCallback, useState, useEffect } from 'react'
+import { deleteTodo, editTodo } from '../api'
+import { useTasks } from '../context/TaskContext'
 import { ReactSession } from 'react-client-session'
 
 interface TaskProps {
-    task: ITask,
+    task: ITask
     refresh: () => void
 }
 
-const Task: React.FC<TaskProps> = ({task, refresh}) => {
+const Task: React.FC<TaskProps> = ({ task, refresh }) => {
     const [openModalEdit, setOpenModalEdit] = useState(false)
     const [openModalDel, setOpenModalDel] = useState(false)
     const [taskToEdit, setTaskToEdit] = useState(task.text)
     const { taskDispatch } = useTasks()
-    const user = ReactSession.get("user")
+    const user = ReactSession.get('user')
 
     const handleSubmitEditTodo = useCallback(() => {
         const editedTask: ITask = {
@@ -25,77 +25,133 @@ const Task: React.FC<TaskProps> = ({task, refresh}) => {
             priority: task.priority,
             done: task.done,
             deadline: task.deadline,
-            user_id: user.id
+            user_id: user.id,
         }
-        
+
         editTodo(editedTask).then(() => {
             taskDispatch({ type: 'EDIT_TASK', payload: editedTask })
             setOpenModalEdit(false)
         })
-      }, [task.deadline, task.done, task.id, task.priority, taskDispatch, taskToEdit, user.id])
+    }, [
+        task.deadline,
+        task.done,
+        task.id,
+        task.priority,
+        taskDispatch,
+        taskToEdit,
+        user.id,
+    ])
 
-    const handleDeleteTask = useCallback(() => {        
+    const handleDeleteTask = useCallback(() => {
         deleteTodo(task.id).then(() => {
-            taskDispatch({ type: 'DELETE_TASK', payload: {id: task.id} })
+            taskDispatch({ type: 'DELETE_TASK', payload: { id: task.id } })
             setOpenModalDel(false)
         })
-      }, [task.id, taskDispatch])
+    }, [task.id, taskDispatch])
 
-    const changeTaskStatus = useCallback(async () => {        
+    const changeTaskStatus = useCallback(async () => {
         editTodo({
             id: task.id,
             text: task.text,
             priority: task.priority,
             done: !task.done,
             deadline: task.deadline,
-            user_id: user.id
-        }).then(() => taskDispatch({ type: 'CHANGE_STATUS', payload: {id: task.id} }))
-      }, [task.deadline, task.done, task.id, task.priority, task.text, taskDispatch, user.id])
+            user_id: user.id,
+        }).then(() =>
+            taskDispatch({ type: 'CHANGE_STATUS', payload: { id: task.id } })
+        )
+    }, [
+        task.deadline,
+        task.done,
+        task.id,
+        task.priority,
+        task.text,
+        taskDispatch,
+        user.id,
+    ])
 
     const priorityColor = () => {
         switch (task.priority) {
             case Priority.LOW:
-                return <p className='text-green-500'>LOW</p>
+                return <p className="text-green-500">LOW</p>
             case Priority.MEDIUM:
-                return <p className='text-yellow-500'>MEDIUM</p>
+                return <p className="text-yellow-500">MEDIUM</p>
             case Priority.HIGH:
-                return <p className='text-red-500'>HIGH</p>
+                return <p className="text-red-500">HIGH</p>
         }
     }
 
     useEffect(() => {
         refresh()
-    },[changeTaskStatus, refresh, ])
+    }, [changeTaskStatus, refresh])
 
     return (
         <tr key={task.id}>
-          <td className="w-full"><p className={task.done ? "line-through" : ""}>{task.text}</p>{priorityColor()}{task.deadline.toLocaleString()}</td>
-          <td className="flex gap-5">
-            {task.done ? <FiXSquare className='text-yellow-500' cursor="pointer" onClick={changeTaskStatus} size={25} /> : <FiCheckSquare className='text-green-500' cursor="pointer" onClick={changeTaskStatus} size={25} />}
-            <FiEdit onClick={() => setOpenModalEdit(true)} cursor="pointer" className='text-blue-500' size={25}/>
-            <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit} handleSubmit={handleSubmitEditTodo}>
-                <h3 className='font-bold text-lg'>Edit task</h3>
-                <div className='modal-action'>
-                    <input
-                        value={taskToEdit}
-                        onChange={e => setTaskToEdit(e.target.value)}
-                        type="text"
-                        placeholder='Type here'
-                        className='input input-bordered w-full'
+            <td className="w-full">
+                <p className={task.done ? 'line-through' : ''}>{task.text}</p>
+                {priorityColor()}
+                {task.deadline.toLocaleString()}
+            </td>
+            <td className="flex gap-5">
+                {task.done ? (
+                    <FiXSquare
+                        className="text-yellow-500"
+                        cursor="pointer"
+                        onClick={changeTaskStatus}
+                        size={25}
                     />
-                    <button type='submit' className='btn'>Submit</button>
-                </div>
-            </Modal>
-            <FiDelete onClick={() => setOpenModalDel(true)} cursor="pointer" className='text-red-500' size={25}/>
-            <Modal modalOpen={openModalDel} setModalOpen={setOpenModalDel}>
-                <h3 className='font-bold text-lg'>Are you sure, you want to delete this task?</h3>
-                <div className="modal-action">
-                    <button onClick={handleDeleteTask} className="btn">Yes</button>
-                </div>
-            </Modal>
+                ) : (
+                    <FiCheckSquare
+                        className="text-green-500"
+                        cursor="pointer"
+                        onClick={changeTaskStatus}
+                        size={25}
+                    />
+                )}
+                <FiEdit
+                    onClick={() => setOpenModalEdit(true)}
+                    cursor="pointer"
+                    className="text-blue-500"
+                    size={25}
+                />
+                <Modal
+                    modalOpen={openModalEdit}
+                    setModalOpen={setOpenModalEdit}
+                    handleSubmit={handleSubmitEditTodo}
+                >
+                    <h3 className="font-bold text-lg">Edit task</h3>
+                    <div className="modal-action">
+                        <input
+                            value={taskToEdit}
+                            onChange={(e) => setTaskToEdit(e.target.value)}
+                            type="text"
+                            placeholder="Type here"
+                            className="input input-bordered w-full"
+                        />
+                        <button type="submit" className="btn">
+                            Submit
+                        </button>
+                    </div>
+                </Modal>
+                <FiDelete
+                    onClick={() => setOpenModalDel(true)}
+                    cursor="pointer"
+                    className="text-red-500"
+                    size={25}
+                />
+                <Modal modalOpen={openModalDel} setModalOpen={setOpenModalDel}>
+                    <h3 className="font-bold text-lg">
+                        Are you sure, you want to delete this task?
+                    </h3>
+                    <div className="modal-action">
+                        <button onClick={handleDeleteTask} className="btn">
+                            Yes
+                        </button>
+                    </div>
+                </Modal>
             </td>
         </tr>
-    );
+    )
 }
 
-export default Task;
+export default Task

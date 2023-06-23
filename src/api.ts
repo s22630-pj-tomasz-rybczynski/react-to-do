@@ -4,10 +4,12 @@ import { IUser } from './types/users'
 const baseUrl = 'https://to-do-json-server.vercel.app'
 
 export const getAllTodos = async (userId: string): Promise<ITask[]> => {
-    const res = await fetch(`${baseUrl}/tasks?user_id=${userId}`, {cache: 'no-store'})
+    const res = await fetch(`${baseUrl}/tasks?user_id=${userId}`, {
+        cache: 'no-store',
+    })
 
     return await res.json()
-};
+}
 
 export const addTodo = async (todo: ITask): Promise<ITask> => {
     const res = await fetch(`${baseUrl}/tasks`, {
@@ -15,12 +17,11 @@ export const addTodo = async (todo: ITask): Promise<ITask> => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(todo)
-        }
-    )
+        body: JSON.stringify(todo),
+    })
 
     return await res.json()
-};
+}
 
 export const editTodo = async (todo: ITask): Promise<ITask> => {
     const res = await fetch(`${baseUrl}/tasks/${todo.id}`, {
@@ -28,22 +29,20 @@ export const editTodo = async (todo: ITask): Promise<ITask> => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(todo)
-        }
-    );
+        body: JSON.stringify(todo),
+    })
 
     return await res.json()
-};
+}
 
 export const deleteTodo = async (id: string): Promise<void> => {
     await fetch(`${baseUrl}/tasks/${id}`, {
-        method: 'DELETE'
-        }
-    )
+        method: 'DELETE',
+    })
 }
 
 export const getAllUsers = async (): Promise<IUser[]> => {
-    const res = await fetch(`${baseUrl}/users`, {cache: 'no-store'})
+    const res = await fetch(`${baseUrl}/users`, { cache: 'no-store' })
 
     return await res.json()
 }
@@ -54,9 +53,8 @@ export const addUser = async (user: IUser): Promise<IUser> => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user)
-        }
-    )
+        body: JSON.stringify(user),
+    })
 
-    return await res.json();
+    return await res.json()
 }
